@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 	"strings"
 	"time"
@@ -106,8 +107,9 @@ func p(format string, v ...interface{}) {
 	if !ok {
 		filename = "???"
 		line = 0
+	} else {
+		filename = path.Base(filename)
 	}
-	filename = strings.Replace(filename, gopath, "", -1)
 	v = append(v, filename)
 	v = append(v, line)
 	fmt.Printf(time.Now().Format("2006/01/02 15:04:05")+format+" [%v:%v]"+"\n", v...)
