@@ -1,17 +1,20 @@
 package logger
 
 import (
-	"fmt"
 	"os"
+	"fmt"
 	"path"
+	"time"
 	"runtime"
 	"strings"
-	"time"
+	
+	"github.com/toolkits/color"
 )
 
-var level int = 0
-
-var gopath string
+var (
+	level int = 0
+	gopath string
+)
 
 func init() {
 	//输出系统所有环境变量的值
@@ -63,42 +66,42 @@ func SetLevel(lv string) error {
 // level: 0
 func Trace(format string, v ...interface{}) {
 	if level <= 0 {
-		p(" [T] "+format, v...)
+		p(color.CyanBG("[T]")+" "+format, v...)
 	}
 }
 
 // level: 1
 func Debug(format string, v ...interface{}) {
 	if level <= 1 {
-		p(" [D] "+format, v...)
+		p(color.GreenBG("[D]")+" "+format, v...)
 	}
 }
 
 // level: 2
 func Info(format string, v ...interface{}) {
 	if level <= 2 {
-		p(" [I] "+format, v...)
+		p(color.BlueBG("[I]")+" "+format, v...)
 	}
 }
 
 // level: 3
 func Warn(format string, v ...interface{}) {
 	if level <= 3 {
-		p(" [W] "+format, v...)
+		p(color.YellowBG("[W]")+" "+format, v...)
 	}
 }
 
 // level: 4
 func Error(format string, v ...interface{}) {
 	if level <= 4 {
-		p(" [E] "+format, v...)
+		p(color.RedBG("[E]")+" "+format, v...)
 	}
 }
 
 // level: 5
 func Fatal(format string, v ...interface{}) {
 	if level <= 5 {
-		p(" [F] "+format, v...)
+		p(color.RedBG("[F]")+" "+format, v...)
 	}
 }
 
@@ -112,5 +115,5 @@ func p(format string, v ...interface{}) {
 	}
 	v = append(v, filename)
 	v = append(v, line)
-	fmt.Printf(time.Now().Format("2006/01/02 15:04:05")+format+" [%v:%v]"+"\n", v...)
+	fmt.Printf(color.Cyan(time.Now().Format("2006/01/02 15:04:05"))+" "+format+" "+color.Blue("[%v:%v]")+"\n", v...)
 }
