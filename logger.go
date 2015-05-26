@@ -2,26 +2,21 @@ package logger
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"path"
-	"runtime"
 	"strings"
-	"time"
 )
 
-var level int = 0
+var (
+	level       int
+	traceLogger = log.New(os.Stdout, "[T] ", log.Ldate|log.Ltime|log.Lshortfile)
+	debugLogger = log.New(os.Stdout, "[D] ", log.Ldate|log.Ltime|log.Lshortfile)
+	infoLogger  = log.New(os.Stdout, "[I] ", log.Ldate|log.Ltime|log.Lshortfile)
+	warnLogger  = log.New(os.Stdout, "[W] ", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLogger = log.New(os.Stdout, "[E] ", log.Ldate|log.Ltime|log.Lshortfile)
+	fatalLogger = log.New(os.Stdout, "[F] ", log.Ldate|log.Ltime|log.Lshortfile)
+)
 
-var gopath string
-
-func init() {
-	//输出系统所有环境变量的值
-	for _, v := range os.Environ() {
-		if ret := strings.Index(v, "GOPATH"); ret >= 0 {
-			gopath = strings.Split(v, "=")[1]
-			break
-		}
-	}
-}
 func SetLevelWithDefault(lv, defaultLv string) {
 	err := SetLevel(lv)
 	if err != nil {
@@ -60,57 +55,74 @@ func SetLevel(lv string) error {
 	return nil
 }
 
-// level: 0
 func Trace(format string, v ...interface{}) {
-	if level <= 0 {
-		p(" [T] "+format, v...)
+	if 0 >= level {
+		traceLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-// level: 1
 func Debug(format string, v ...interface{}) {
-	if level <= 1 {
-		p(" [D] "+format, v...)
+	if 1 >= level {
+		debugLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-// level: 2
 func Info(format string, v ...interface{}) {
-	if level <= 2 {
-		p(" [I] "+format, v...)
+	if 2 >= level {
+		infoLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-// level: 3
 func Warn(format string, v ...interface{}) {
-	if level <= 3 {
-		p(" [W] "+format, v...)
+	if 3 >= level {
+		warnLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-// level: 4
 func Error(format string, v ...interface{}) {
-	if level <= 4 {
-		p(" [E] "+format, v...)
+	if 4 >= level {
+		errorLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-// level: 5
 func Fatal(format string, v ...interface{}) {
-	if level <= 5 {
-		p(" [F] "+format, v...)
+	if 5 >= level {
+		fatalLogger.Output(2, fmt.Sprintf(format, v...))
 	}
 }
 
-func p(format string, v ...interface{}) {
-	_, filename, line, ok := runtime.Caller(2)
-	if !ok {
-		filename = "???"
-		line = 0
-	} else {
-		filename = path.Base(filename)
+func Traceln(v ...interface{}) {
+	if 0 >= level {
+		traceLogger.Output(2, fmt.Sprintln(v...))
 	}
-	v = append(v, filename)
-	v = append(v, line)
-	fmt.Printf(time.Now().Format("2006/01/02 15:04:05")+format+" [%v:%v]"+"\n", v...)
+}
+
+func Debugln(v ...interface{}) {
+	if 1 >= level {
+		debugLogger.Output(2, fmt.Sprintln(v...))
+	}
+}
+
+func Infoln(v ...interface{}) {
+	if 2 >= level {
+		infoLogger.Output(2, fmt.Sprintln(v...))
+	}
+}
+
+func Warnln(v ...interface{}) {
+	if 3 >= level {
+		warnLogger.Output(2, fmt.Sprintln(v...))
+	}
+}
+
+func Errorln(v ...interface{}) {
+	if 4 >= level {
+		errorLogger.Output(2, fmt.Sprintln(v...))
+	}
+}
+
+func Fatalln(v ...interface{}) {
+	if 5 >= level {
+		fatalLogger.Output(2, fmt.Sprintln(v...))
+	}
 }
